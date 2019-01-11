@@ -1,21 +1,31 @@
+import { View }  from '../globals/Component';
 import {daddario} from '../index';
-import $ from 'jquery';
 
-class Menu extends Backbone.View {
-    $el = $('[data-view="component-menu"]');
+class Menu extends View {
 
-    constructor () {
-        super();
+    constructor (options) {
+        super({
+            ...options,
+            events: {
+                'click .test': 'click',
+            }
+        });
+
+        console.log(options);
+
+        this.model.on('change', this.render.bind(this));
+
+        this.model.set({name: 'Salvatore'});
     }
 
-    initialize () {
-        console.log('component: Menu Loaded', this.$el, this.el);
-        this.render();
-    }
+    click () {
+        console.log(this);
+        this.model.set({name: 'Daryl'});
+    };
 
     render () {
-        console.log(this.$el);
-        this.$el.append('<h1>Hello World</h1>');
+        console.log(`<h1 class="test">${this.model.get('name')}</h1>`);
+        this.$el.html(`<h1 class="test">${this.model.get('name')}</h1>`);
     }
 }
 

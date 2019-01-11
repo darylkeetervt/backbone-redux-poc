@@ -12,6 +12,14 @@ function requireAll(r) { r.keys().forEach(r); }
 
 requireAll(require.context('./components/', true, /\.view\.js$/));
 
+daddario.models.Human = Backbone.Model.extend({
+    initialize() {}
+});
+
+daddario.collections.Humans =  Backbone.Collection.extend({
+})
+
+
 /**
  * @author Salvatore Randazzo
  */
@@ -44,8 +52,6 @@ requireAll(require.context('./components/', true, /\.view\.js$/));
 
             components = $('[data-view]');
 
-            console.log(components);
-
             _.each(components, function (component) {
                 view =  $(component).attr('data-view');
                 model = $(component).attr('data-model');
@@ -54,27 +60,16 @@ requireAll(require.context('./components/', true, /\.view\.js$/));
                 if (daddario.views[view] !== undefined) {
 
                     if (collection === undefined) {
-                        console.log($(component));
                         viewsInstances.push(new daddario.views[view]({
                             el: $(component),
                             model: daddario.models[model] !== undefined ? new daddario.models[model]() : null
                         }));
                     } else {
-                        tempCollection = _.find(daddario.dataLoader.collections, (dataLoaderCollection) => {
-                            return dataLoaderCollection.name === collection;
-                    });
-
-                        if(!tempCollection) {
-                            console.error('Probably caused by not found collection with name ' + collection +
-                                ' please check that the name matches an actual package. Available packages:', daddario.dataLoader.collections);
-                        }
-
                         viewsInstances.push(new daddario.views[view]({
                             el: $(component),
-                            collection: tempCollection.object
+                            collection: daddario.collections[collection] !== undefined ? new daddario.collections[collection]() : null
                         }));
                     }
-
                 } else {
                     throw new Error ('No view found for ' + view );
                 }

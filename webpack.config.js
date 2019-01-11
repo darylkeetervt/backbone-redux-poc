@@ -1,3 +1,5 @@
+const LiveReloadPlugin = require('webpack-livereload-plugin');
+
 module.exports = {
     mode: 'development',
     watch: true,
@@ -19,5 +21,8 @@ module.exports = {
                 }
             }
         ]
-    }
+    },
+    plugins: [
+        new LiveReloadPlugin()
+    ]
 };
