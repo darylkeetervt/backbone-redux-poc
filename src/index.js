@@ -2,6 +2,8 @@ import Backbone from 'backbone';
 import jQuery from 'jquery';
 import _ from 'underscore';
 
+require('purecss');
+
 Backbone.$ = jQuery;
 export let daddario = daddario || {};
 daddario.views = daddario.views || {};
@@ -12,12 +14,14 @@ function requireAll(r) { r.keys().forEach(r); }
 
 requireAll(require.context('./components/', true, /\.view\.js$/));
 
-daddario.models.Human = Backbone.Model.extend({
+daddario.models.Post = Backbone.Model.extend({
     initialize() {}
 });
 
-daddario.collections.Humans =  Backbone.Collection.extend({
-})
+daddario.collections.Posts =  Backbone.Collection.extend({
+    url: `https://jsonplaceholder.typicode.com/posts`,
+    model: daddario.models.Post,
+});
 
 
 /**

@@ -1,31 +1,38 @@
 import { View }  from '../globals/Component';
 import {daddario} from '../index';
+import _ from 'underscore';
+import $  from 'jquery';
+
+require('./component-menu.scss');
 
 class Menu extends View {
 
-    constructor (options) {
+    /**
+     * Underscore template declaration
+     */
+    template = _.template($('#component-post').html());
+
+    constructor(options) {
         super({
             ...options,
             events: {
-                'click .test': 'click',
+                'click .post': 'click',
             }
         });
 
-        console.log(options);
-
-        this.model.on('change', this.render.bind(this));
-
-        this.model.set({name: 'Salvatore'});
+        this.collection.fetch({
+            success: (data) => {
+                this.render();
+            }
+        })
     }
 
     click () {
-        console.log(this);
-        this.model.set({name: 'Daryl'});
-    };
+        alert('clickced');
+    }
 
-    render () {
-        console.log(`<h1 class="test">${this.model.get('name')}</h1>`);
-        this.$el.html(`<h1 class="test">${this.model.get('name')}</h1>`);
+    render() {
+        this.$('.pure-g').html(this.template({ data: this.collection.toJSON() }));
     }
 }
 
