@@ -41,4 +41,3 @@ class Posts extends View {
 }
 
 daddario.views.Posts = Posts;
-
