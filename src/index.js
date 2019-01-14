@@ -13,16 +13,8 @@ daddario.collections = daddario.collections || {};
 function requireAll(r) { r.keys().forEach(r); }
 
 requireAll(require.context('./components/', true, /\.view\.js$/));
-
-daddario.models.Post = Backbone.Model.extend({
-    initialize() {}
-});
-
-daddario.collections.Posts =  Backbone.Collection.extend({
-    url: `https://jsonplaceholder.typicode.com/posts`,
-    model: daddario.models.Post,
-});
-
+requireAll(require.context('./components/', true, /\.model\.js$/));
+requireAll(require.context('./components/', true, /\.collection\.js$/));
 
 /**
  * @author Salvatore Randazzo

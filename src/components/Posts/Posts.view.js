@@ -1,12 +1,11 @@
-import { View }  from '../globals/Component';
-import {daddario} from '../index';
+import {View} from 'backbone';
+import {daddario} from '../../index';
 import _ from 'underscore';
-import $  from 'jquery';
+import $ from 'jquery';
 
-require('./component-menu.scss');
+require('./Posts.scss');
 
-class Menu extends View {
-
+class Posts extends View {
     /**
      * Underscore template declaration
      */
@@ -36,4 +35,5 @@ class Menu extends View {
     }
 }
 
-daddario.views.Menu = Menu;
+daddario.views.Posts = Posts;
+
