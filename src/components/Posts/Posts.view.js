@@ -30,8 +30,8 @@ class Posts extends View {
     }
 
     click () {
-        alert('clickced');
-    }
+          alert('clickced');
+}
 
     render() {
         const {currentFilter} = store.getState();
