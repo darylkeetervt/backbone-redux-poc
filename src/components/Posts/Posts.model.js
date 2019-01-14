@@ -1,6 +1,6 @@
 import Backbone from 'backbone';
-import {daddario} from '../../index';
+import {app} from '../../index';
 
-daddario.models.Post = Backbone.Model.extend({
+app.models.Post = Backbone.Model.extend({
     initialize() {}
 });

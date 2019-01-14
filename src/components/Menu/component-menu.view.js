@@ -1,5 +1,5 @@
 import { View }  from '../../globals/Component';
-import {daddario} from '../../index';
+import {app} from '../../index';
 
 require('./component-menu.scss');
 
@@ -20,4 +20,4 @@ class Menu extends View {
     }
 }
 
-daddario.views.Menu = Menu;
+app.views.Menu = Menu;

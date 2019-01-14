@@ -1,7 +1,7 @@
 import Backbone from 'backbone';
-import {daddario} from '../../index';
+import {app} from '../../index';
 
-daddario.collections.Posts =  Backbone.Collection.extend({
+app.collections.Posts =  Backbone.Collection.extend({
     url: `https://jsonplaceholder.typicode.com/posts`,
-    model: daddario.models.Post,
+    model: app.models.Post,
 });

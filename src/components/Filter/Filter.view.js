@@ -1,5 +1,5 @@
 import {View} from 'backbone';
-import {daddario} from '../../index';
+import {app} from '../../index';
 import { store } from '../../store/AppStore';
 
 require('./Filter.scss');
@@ -23,5 +23,5 @@ class Filter extends View {
     }
 }
 
-daddario.views.Filter = Filter;
+app.views.Filter = Filter;
 

@@ -1,16 +1,15 @@
 import Backbone from 'backbone';
 import jQuery from 'jquery';
-import _ from 'underscore';
 
 require('purecss');
 
 Backbone.$ = jQuery;
-export let daddario = daddario || {};
-daddario.views = daddario.views || {};
-daddario.models = daddario.models || {};
-daddario.collections = daddario.collections || {};
+export const app = app || {};
+app.views = app.views || {};
+app.models = app.models || {};
+app.collections = app.collections || {};
 
-function requireAll(r) { r.keys().forEach(r); }
+const requireAll = (r) => { r.keys().forEach(r); };
 
 requireAll(require.context('./components/', true, /\.view\.js$/));
 requireAll(require.context('./components/', true, /\.model\.js$/));
@@ -20,9 +19,9 @@ requireAll(require.context('./components/', true, /\.collection\.js$/));
  * @author Salvatore Randazzo
  */
 
-// Resetting $ to jquery, if we decide to remove jquery dependency w can do it from her
+// Resetting $ to jquery, if we decide to remove jquery dependency w can do it from here
 
-(function ($, DD) {
+(($, APP) => {
     'use strict';
 
     /**
@@ -31,39 +30,37 @@ requireAll(require.context('./components/', true, /\.collection\.js$/));
      * @constructor
      */
 
-    var Loader = function () {
-        var components = null;
-        var view = '';
-        var model = '';
-        var collection = '';
-        var viewsInstances = [];
-        var tempCollection = null;
+    const Loader = () => {
+        let components = null;
+        let view = '';
+        let model = '';
+        let collection = '';
+        const viewsInstances = [];
 
         /**
          * Initializer
          */
-        var init = function () {
-
+        const init = () => {
             Backbone.$ = $;
+            components = $('[data-view]').toArray();
 
-            components = $('[data-view]');
+            components.forEach(component => {
 
-            _.each(components, function (component) {
                 view =  $(component).attr('data-view');
                 model = $(component).attr('data-model');
                 collection = $(component).attr('data-collection');
 
-                if (daddario.views[view] !== undefined) {
+                if (app.views[view] !== undefined) {
 
                     if (collection === undefined) {
-                        viewsInstances.push(new daddario.views[view]({
+                        viewsInstances.push(new app.views[view]({
                             el: $(component),
-                            model: daddario.models[model] !== undefined ? new daddario.models[model]() : null
+                            model: app.models[model] !== undefined ? new app.models[model]() : null
                         }));
                     } else {
-                        viewsInstances.push(new daddario.views[view]({
+                        viewsInstances.push(new app.views[view]({
                             el: $(component),
-                            collection: daddario.collections[collection] !== undefined ? new daddario.collections[collection]() : null
+                            collection: app.collections[collection] !== undefined ? new app.collections[collection]() : null
                         }));
                     }
                 } else {
@@ -71,7 +68,6 @@ requireAll(require.context('./components/', true, /\.collection\.js$/));
                 }
 
             });
-
 
         };
 
@@ -86,4 +82,4 @@ requireAll(require.context('./components/', true, /\.collection\.js$/));
     window.loader = new Loader();
     window.loader.init();
 
-})(jQuery, daddario);
+})(jQuery, app);

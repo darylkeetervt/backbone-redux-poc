@@ -1,5 +1,5 @@
 import {View} from 'backbone';
-import {daddario} from '../../index';
+import {app} from '../../index';
 import _ from 'underscore';
 import $ from 'jquery';
 import {store} from '../../store/AppStore';
@@ -7,10 +7,21 @@ import {store} from '../../store/AppStore';
 require('./Posts.scss');
 
 class Posts extends View {
+
+    setTemplate = function () {
+        _.templateSettings = {
+            escape: /\<\@-(.+?)\@\>/g,
+            interpolate: /\<\@=(.+?)\@\>/g,
+            evaluate: /\<\@(.+?)\@\>/g,
+        };
+
+        return _.template($('#component-post').html());
+    };
+
     /**
      * Underscore template declaration
      */
-    template = _.template($('#component-post').html());
+    template = this.setTemplate();
 
     constructor(options) {
         super({
@@ -31,7 +42,7 @@ class Posts extends View {
 
     click () {
           alert('clickced');
-}
+    }
 
     render() {
         const {currentFilter} = store.getState();
@@ -40,4 +51,4 @@ class Posts extends View {
     }
 }
 
-daddario.views.Posts = Posts;
+app.views.Posts = Posts;
