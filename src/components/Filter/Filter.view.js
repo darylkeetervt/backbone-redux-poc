@@ -1,7 +1,6 @@
 import {View} from 'backbone';
 import {daddario} from '../../index';
-import _ from 'underscore';
-import $ from 'jquery';
+import { store } from '../../store/AppStore';
 
 require('./Filter.scss');
 
@@ -14,11 +13,13 @@ class Filter extends View {
                 'keyup input[name="entry"]': 'filter'
             }
         });
+
         console.log('Filter Loaded');
     }
 
     filter () {
         const entry = this.$('input[name="entry"]').val();
+        store.dispatch({ entry, type: 'FILTER' });
     }
 }
 
