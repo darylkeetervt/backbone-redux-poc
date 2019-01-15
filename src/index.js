@@ -1,5 +1,6 @@
 import Backbone from 'backbone';
 import jQuery from 'jquery';
+import _underscore from 'underscore';
 
 require('purecss');
 
@@ -9,18 +10,27 @@ app.views = app.views || {};
 app.models = app.models || {};
 app.collections = app.collections || {};
 
+// Load component files
 const requireAll = (r) => { r.keys().forEach(r); };
-
 requireAll(require.context('./components/', true, /\.view\.js$/));
 requireAll(require.context('./components/', true, /\.model\.js$/));
 requireAll(require.context('./components/', true, /\.collection\.js$/));
+
+// Override template delimiters to avoid server interpolation conflicts
+_underscore.templateSettings = {
+    escape: /\<\@-(.+?)\@\>/g,
+    interpolate: /\<\@=(.+?)\@\>/g,
+    evaluate: /\<\@(.+?)\@\>/g,
+};
+
+// Export underscore with template override. Import from this file!
+export const _ = { ..._underscore };
 
 /**
  * @author Salvatore Randazzo
  */
 
 // Resetting $ to jquery, if we decide to remove jquery dependency w can do it from here
-
 (($, APP) => {
     'use strict';
 
