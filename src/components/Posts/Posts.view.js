@@ -1,27 +1,16 @@
-import {View} from 'backbone';
-import {app} from '../../index';
-import _ from 'underscore';
+import { View } from 'backbone';
+import { app, _ } from '../../index';
 import $ from 'jquery';
-import {store} from '../../store/AppStore';
+import { store } from '../../store/AppStore';
 
 require('./Posts.scss');
 
 class Posts extends View {
 
-    setTemplate = function () {
-        _.templateSettings = {
-            escape: /\<\@-(.+?)\@\>/g,
-            interpolate: /\<\@=(.+?)\@\>/g,
-            evaluate: /\<\@(.+?)\@\>/g,
-        };
-
-        return _.template($('#component-post').html());
-    };
-
     /**
      * Underscore template declaration
      */
-    template = this.setTemplate();
+    template = _.template($('#component-post').html());
 
     constructor(options) {
         super({
@@ -41,7 +30,7 @@ class Posts extends View {
     }
 
     click () {
-          alert('clickced');
+
     }
 
     render() {
