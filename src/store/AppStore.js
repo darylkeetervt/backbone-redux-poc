@@ -1,16 +1,7 @@
 import { createStore } from 'redux';
-
-function filter(state = {currentFilter: ''}, action = { type: 'NOOP' }) {
-    switch (action.type) {
-        case 'FILTER':
-            console.log('updating filter');
-            return { ...state, currentFilter: action.entry };
-        default:
-            return state;
-    }
-}
+import appReducers from './combinedReducers';
 
 export const store = createStore(
-    filter,
+    appReducers,
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );

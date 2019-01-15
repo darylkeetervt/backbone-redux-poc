@@ -34,7 +34,7 @@ class Posts extends View {
     }
 
     render() {
-        const {currentFilter} = store.getState();
+        const { filter: { currentFilter} } = store.getState();
         const posts = this.collection.toJSON().filter(post => post.title.indexOf(currentFilter) > -1);
         this.$('.pure-g').html(this.template({ data: posts }));
     }
