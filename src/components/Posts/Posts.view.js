@@ -21,13 +21,10 @@ class Posts extends View {
             }
         });
 
-        this.posts = [];
-
         store.subscribe(this.handleChange.bind(this));
 
         this.collection.fetch({
             success: (data) => {
-                this.posts = data;
                 this.render();
             }
         });
