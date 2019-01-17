@@ -13,8 +13,6 @@ class Filter extends View {
                 'keyup input[name="entry"]': 'filter'
             }
         });
-
-        console.log('Filter Loaded');
     }
 
     filter () {
