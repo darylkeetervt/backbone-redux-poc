@@ -4,7 +4,7 @@ const initialState = {
 
 export default function filter(state = initialState, action = { type: 'NOOP' }) {
     switch (action.type) {
-        case 'FILTER':
+        case 'FILTER_POSTS':
             return { ...state, currentFilter: action.entry };
         default:
             return state;

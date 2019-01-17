@@ -17,7 +17,7 @@ class Filter extends View {
 
     filter () {
         const entry = this.$('input[name="entry"]').val();
-        store.dispatch({ entry, type: 'FILTER' });
+        store.dispatch({ entry, type: 'FILTER_POSTS' });
     }
 }
 
