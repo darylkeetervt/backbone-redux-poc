@@ -1,6 +1,9 @@
 import Backbone from 'backbone';
 import jQuery from 'jquery';
 import _underscore from 'underscore';
+import { syncCollections } from 'backbone-redux';
+import { store } from './store/AppStore';
+import { reducers } from './store/combinedReducers';
 
 require('purecss');
 
@@ -11,7 +14,7 @@ app.models = app.models || {};
 app.collections = app.collections || {};
 
 // Load component files
-const requireAll = (r) => { r.keys().forEach(r); };
+export const requireAll = (r) => { r.keys().forEach(r); };
 requireAll(require.context('./components/', true, /\.view\.js$/));
 requireAll(require.context('./components/', true, /\.model\.js$/));
 requireAll(require.context('./components/', true, /\.collection\.js$/));
@@ -46,6 +49,7 @@ export const _ = { ..._underscore };
         let model = '';
         let collection = '';
         const viewsInstances = [];
+        let collectionMap = {};
 
         /**
          * Initializer
@@ -53,6 +57,7 @@ export const _ = { ..._underscore };
         const init = () => {
             Backbone.$ = $;
             components = $('[data-view]').toArray();
+            let dataListeners = [];
 
             components.forEach(component => {
 
@@ -67,11 +72,15 @@ export const _ = { ..._underscore };
                             el: $(component),
                             model: app.models[model] !== undefined ? new app.models[model]() : null
                         }));
+                        model && dataListeners.push(model);
                     } else {
+                        let collectionInstance = app.collections[collection] !== undefined ? new app.collections[collection]() : null;
+                        collectionMap[collection] = collectionInstance;
                         viewsInstances.push(new app.views[view]({
                             el: $(component),
-                            collection: app.collections[collection] !== undefined ? new app.collections[collection]() : null
+                            collection: collectionInstance
                         }));
+                        collection && dataListeners.push(collection);
                     }
                 } else {
                     throw new Error ('No view found for ' + view );
@@ -79,6 +88,14 @@ export const _ = { ..._underscore };
 
             });
 
+            // Load collections into store
+            syncCollections(collectionMap, store, reducers);
+
+            // Register models and collections as data listeners
+            store.dispatch({ type: 'REGISTER_DATA_LISTENERS', payload: dataListeners});
+
+            // Set app to loaded state
+            store.dispatch({ type: 'APP_LOADED' });
         };
 
         // Public

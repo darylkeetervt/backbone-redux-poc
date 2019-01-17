@@ -17,20 +17,36 @@ class Posts extends View {
             ...options,
             events: {
                 'click .post': 'click',
+                'click .post-button': 'buttonClicked'
             }
         });
 
-        store.subscribe(this.render.bind(this));
+        store.subscribe(this.handleChange.bind(this));
 
         this.collection.fetch({
             success: (data) => {
                 this.render();
             }
-        })
+        });
+    }
+
+    handleChange () {
+        // Check if POSTS were changed before rendering
+        const { app: { alertedListeners } } = store.getState();
+        if (alertedListeners.includes('POSTS')) {
+            store.dispatch({ type: 'ACK_ACTION', payload: 'POSTS' });
+            this.render();
+        }
     }
 
     click () {
 
+    }
+
+    buttonClicked (element) {
+        const modelId = $(element.currentTarget).data('post-id');
+        let model = this.collection.get(modelId);
+        model.set({ title: 'random'});
     }
 
     render() {
