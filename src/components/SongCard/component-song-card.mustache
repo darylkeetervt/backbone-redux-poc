@@ -1,0 +1,16 @@
+    <script type="text/x-handlebars-template" id="component-song-card">
+        <div class="pure-u-1">
+            <div class="card">
+                <div class="video-container">
+                    <video height="250" id="video-<@= element.trackId @>" data-video-id="<@= element.trackId @>">
+                        <source src="<@= element.previewUrl @>" type="video/x-m4v">
+                    </video>
+                </div>
+                <button data-video-id="<@= element.trackId @>" class="button play"></button>
+                <div class="track-info">
+                    <div class="track-time" data-video-id="<@= element.trackId @>">00:00:00</div>
+                    <div class="time-left" data-video-id="<@= element.trackId @>">-00:00:00</div>
+                </div>
+            </div>
+        </div>
+    </script>
