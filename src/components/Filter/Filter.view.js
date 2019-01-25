@@ -1,5 +1,5 @@
 import {View} from 'backbone';
-import {app} from '../../index';
+import { app, uuid} from '../../index';
 import { store } from '../../store/AppStore';
 
 require('./Filter.scss');
@@ -13,6 +13,8 @@ class Filter extends View {
                 'keyup input[name="entry"]': 'filter'
             }
         });
+
+        this.uuid = uuid();
     }
 
     filter () {

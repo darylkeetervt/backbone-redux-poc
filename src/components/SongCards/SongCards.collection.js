@@ -18,5 +18,6 @@ app.collections.SongCards =  Backbone.Collection.extend({
     },
     parse : function(response) {
         return response.results;
-    }
+    },
+    collectionName: 'SongCards'
 });

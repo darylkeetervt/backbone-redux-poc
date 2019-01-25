@@ -48,10 +48,10 @@ class SongCard extends View {
     }
 
     handleChange () {
-        // // Check if the SONG_CARD was changed before rendering
+        // // Check if the SONGCARD was changed before rendering
         // const { app: { alertedListeners } } = store.getState();
-        // if (alertedListeners.filter(item => item.match(/SONG_CARD$/)).length) {
-        //     store.dispatch({ type: 'ACK_ACTION', payload: 'SONG_CARD' });
+        // if (alertedListeners.filter(item => item.match(/SONGCARD$/)).length) {
+        //     store.dispatch({ type: 'ACK_ACTION', payload: 'SONGCARD' });
         //     this.render();
         // }
     }

@@ -1,9 +1,10 @@
-import { View }  from '../../globals/Component';
-import {app} from '../../index';
+import { ComponentView }  from '../../globals/Component';
+import { app, uuid } from '../../index';
+import { store } from '../../store/AppStore';
 
 require('./component-menu.scss');
 
-class Menu extends View {
+class Menu extends ComponentView {
 
 
     constructor(options) {
@@ -13,6 +14,18 @@ class Menu extends View {
                 'click .post': 'click',
             }
         });
+
+        this.uuid = uuid();
+
+        store.subscribe(this.handleChange.bind(this));
+    }
+
+    handleChange () {
+        const { app: { alertedListeners } } = store.getState();
+        if (alertedListeners.includes(this.uuid)) {
+            store.dispatch({ type: 'VIEW_ACKNOWLEDGED', payload: this.uuid });
+            this.render();
+        }
     }
 
     render() {

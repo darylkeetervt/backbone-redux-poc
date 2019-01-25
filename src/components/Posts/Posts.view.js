@@ -1,56 +1,42 @@
-import { View } from 'backbone';
-import { app, _ } from '../../index';
-import $ from 'jquery';
-import { store } from '../../store/AppStore';
+import { ComponentView } from '../../globals/Component';
+import { app } from '../../index';
+import { fetchCollection } from '../../reducers/fetch';
 
 require('./Posts.scss');
 
-class Posts extends View {
-
-    /**
-     * Underscore template declaration
-     */
-    template = _.template($('#component-post').html());
+class Posts extends ComponentView {
 
     constructor(options) {
         super({
             ...options,
             events: {
-                'click .post': 'click',
                 'click .post-button': 'buttonClicked'
-            }
-        });
-
-        store.subscribe(this.handleChange.bind(this));
-
-        this.collection.fetch({
-            success: (data) => {
-                this.render();
             }
         });
     }
 
-    handleChange () {
+    onAppReady () {
+        this.setTemplate('component-post');
+        fetchCollection(this.collection);
+    }
+
+    onStoreUpdated (store) {
         // Check if POSTS were changed before rendering
         const { app: { alertedListeners } } = store.getState();
-        if (alertedListeners.includes('POSTS')) {
-            store.dispatch({ type: 'ACK_ACTION', payload: 'POSTS' });
+        if (alertedListeners.includes(this.uuid)) {
+            store.dispatch({ type: 'VIEW_ACKNOWLEDGED', payload: this.uuid });
             this.render();
         }
     }
 
-    click () {
-
-    }
-
     buttonClicked (element) {
-        const modelId = $(element.currentTarget).data('post-id');
+        const modelId = this.$(element.currentTarget).data('post-id');
         let model = this.collection.get(modelId);
         model.set({ title: 'random'});
     }
 
     render() {
-        const { filter: { currentFilter} } = store.getState();
+        const { filter: { currentFilter} } = this.getStore().getState();
         const posts = this.collection.toJSON().filter(post => post.title.indexOf(currentFilter) > -1);
         this.$('.pure-g').html(this.template({ data: posts }));
     }

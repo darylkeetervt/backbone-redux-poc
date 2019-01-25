@@ -1,18 +1,13 @@
-import { View } from 'backbone';
+import { ComponentView } from '../../globals/Component';
 import { app, _ } from '../../index';
 import $ from 'jquery';
-import { store } from '../../store/AppStore';
 import 'slick-carousel';
+import { fetchCollection } from '../../reducers/fetch';
 
 require('./SongCards.scss');
 require('../../globals/slick-carousel.scss');
 
-class SongCards extends View {
-
-    /**
-     * Underscore template declaration
-     */
-    template = _.template($('#component-song-cards').html());
+class SongCards extends ComponentView {
 
     constructor(options) {
         super({
@@ -21,28 +16,6 @@ class SongCards extends View {
 
             }
         });
-
-        store.subscribe(this.handleChange.bind(this));
-
-        this.collection.fetch({
-            success: (data) => {
-                this.elements = _.pluck(
-                    this.collection.models.map(model => {
-                        const view = new app.views.SongCard({ model: model });
-                        this.listenTo(view, 'play', this.play);
-                        this.listenTo(view, 'pause', this.pause);
-                        this.listenTo(view, 'over', this.songOver);
-
-                        return view;
-                    })
-                    , '$el'
-                );
-                this.render();
-            }
-        });
-
-        this.$carousel = this.$('.pure-g');
-        this.setCarouselConfig();
     }
 
     setCarouselConfig() {
@@ -106,11 +79,38 @@ class SongCards extends View {
         });
     }
 
-    handleChange () {
-        // Check if POSTS were changed before rendering
-        const { app: { alertedListeners } } = store.getState();
-        if (alertedListeners.includes('SONG_CARDS')) {
-            store.dispatch({ type: 'ACK_ACTION', payload: 'SONG_CARDS' });
+    onAppReady () {
+        this.setTemplate('component-song-cards');
+        this.elements = [];
+        this.$carousel = this.$('.pure-g');
+        this.setCarouselConfig();
+        fetchCollection(this.collection);
+    }
+
+    onStoreUpdated (store) {
+        const state = store.getState();
+
+        // Check if data we are listening to in the store was changed before rendering
+        const { app: { alertedListeners } } = state;
+        const matchedListeners = alertedListeners.filter(viewId => viewId === this.uuid);
+
+
+        if (matchedListeners.length) {
+            matchedListeners.forEach(() => store.dispatch({type: 'VIEW_ACKNOWLEDGED', payload: this.uuid}));
+
+            this.elements = _.pluck(
+                this.collection.models.map(model => {
+
+                    const view = new app.views.SongCard({ model: model });
+                    this.listenTo(view, 'play', this.play);
+                    this.listenTo(view, 'pause', this.pause);
+                    this.listenTo(view, 'over', this.songOver);
+
+                    return view;
+                })
+                , '$el'
+            );
+
             this.render();
         }
     }
