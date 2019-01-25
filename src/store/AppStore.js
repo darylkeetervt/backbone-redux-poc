@@ -1,6 +1,10 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import { notifyViews } from './middleware';
 
+/**
+ * Initialize the redux store. Reducers are loaded in the index.js loader file.
+ * @type {any}
+ */
 export const store = createStore(
     (state = {}) => state,
     compose(

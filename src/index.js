@@ -4,6 +4,7 @@ import _underscore from 'underscore';
 import { syncCollections } from 'backbone-redux';
 import { store } from './store/AppStore';
 import { reducers } from './store/combinedReducers';
+export const uuid = require('uuid/v4');
 
 require('purecss');
 
@@ -49,7 +50,8 @@ export const _ = { ..._underscore };
         let model = '';
         let collection = '';
         const viewsInstances = [];
-        let collectionMap = {};
+        const collectionMap = {};
+        const subscriptions = [];
 
         /**
          * Initializer
@@ -57,10 +59,10 @@ export const _ = { ..._underscore };
         const init = () => {
             Backbone.$ = $;
             components = $('[data-view]').toArray();
-            let dataListeners = [];
+            const dataListeners = [];
 
+            // Check each loaded view and associate models and/or collections if mentioned.
             components.forEach(component => {
-
                 view =  $(component).attr('data-view');
                 model = $(component).attr('data-model');
                 collection = $(component).attr('data-collection');
@@ -68,20 +70,47 @@ export const _ = { ..._underscore };
                 if (app.views[view] !== undefined) {
 
                     if (collection === undefined) {
-                        viewsInstances.push(new app.views[view]({
+                        const viewInstanceWithModel = new app.views[view]({
                             el: $(component),
                             model: app.models[model] !== undefined ? new app.models[model]() : null
-                        }));
-                        model && dataListeners.push(model);
+                        });
+
+                        viewsInstances.push(viewInstanceWithModel);
+
+                        // TODO: Look into adding models to the store.
+                        // model && dataListeners.push(model);
                     } else {
-                        let collectionInstance = app.collections[collection] !== undefined ? new app.collections[collection]() : null;
-                        collectionMap[collection] = collectionInstance;
-                        viewsInstances.push(new app.views[view]({
+                        // Only add this instantiated collection to redux if we haven't already
+                        if (!collectionMap[collection]) {
+                            collectionMap[collection] = app.collections[collection] !== undefined ? new app.collections[collection]() : null;
+                        }
+
+                        const viewInstanceWithCollection = new app.views[view]({
                             el: $(component),
-                            collection: collectionInstance
-                        }));
+                            collection: collectionMap[collection]
+                        });
+
+                        viewsInstances.push(viewInstanceWithCollection);
                         collection && dataListeners.push(collection);
+
+                        // Automatically register the view as a subscriber to receive redux store notifications when
+                        // the associated collection is changed.
+                        const viewId = viewInstanceWithCollection.uuid;
+                        if (subscriptions.filter(item => item.topic === collection.toUpperCase()).length) {
+                            subscriptions.map(item => {
+                                if (item.topic === collection.toUpperCase()) {
+                                    if (item.subscriberIds) {
+                                        item.subscriberIds.push(viewId);
+                                    } else {
+                                        item.subscriberIds = [viewId];
+                                    }
+                                }
+                            });
+                        } else {
+                            subscriptions.push({ topic: collection.toUpperCase(), subscriberIds: [viewId] })
+                        }
                     }
+
                 } else {
                     throw new Error ('No view found for ' + view );
                 }
@@ -91,8 +120,8 @@ export const _ = { ..._underscore };
             // Load collections into store
             syncCollections(collectionMap, store, reducers);
 
-            // Register models and collections as data listeners
-            store.dispatch({ type: 'REGISTER_DATA_LISTENERS', payload: dataListeners});
+            // Register collections as data listeners (models TBD)
+            store.dispatch({ type: 'REGISTER_DATA_LISTENERS', payload: subscriptions});
 
             // Set app to loaded state
             store.dispatch({ type: 'APP_LOADED' });

@@ -9,8 +9,10 @@ export const notifyViews = store => next => action => {
     next(action);
 
     store.getState().app.dataListeners.forEach(item => {
-        if (action.type.includes(`_${item}`)) {
-            store.dispatch({ type: 'LOG_ACTION', payload: item });
+        if (action.type.includes(`${item.topic}`)) {
+            item.subscriberIds.forEach(subscriberId => {
+                store.dispatch({ type: 'NOTIFY_VIEW', payload: subscriberId });
+            });
         }
     });
 };
