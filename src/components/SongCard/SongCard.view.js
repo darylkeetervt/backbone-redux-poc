@@ -1,16 +1,9 @@
-import { View } from 'backbone';
-import { app, _ } from '../../index';
-import $ from 'jquery';
-import { store } from '../../store/AppStore';
+import { ComponentView } from '../../globals/Component';
+import { _, app } from '../../index';
 
 require('./SongCard.scss');
 
-class SongCard extends View {
-
-    /**
-     * Underscore template declaration
-     */
-    template = _.template($('#component-song-card').html());
+class SongCard extends ComponentView {
 
     constructor(options) {
         super({
@@ -22,14 +15,6 @@ class SongCard extends View {
                 'mouseenter .pause' : 'toggleControls'
             }
         });
-
-        store.subscribe(this.handleChange.bind(this));
-
-        this.render();
-
-        this.$video = this.$('video');
-        this.$video[0].ontimeupdate = this.updateTrackInfo.bind(this);
-        this.$video[0].onended = this.songOver.bind(this);
     }
 
     toggleControls(event) {
@@ -47,13 +32,13 @@ class SongCard extends View {
         }
     }
 
-    handleChange () {
-        // // Check if the SONGCARD was changed before rendering
-        // const { app: { alertedListeners } } = store.getState();
-        // if (alertedListeners.filter(item => item.match(/SONGCARD$/)).length) {
-        //     store.dispatch({ type: 'ACK_ACTION', payload: 'SONGCARD' });
-        //     this.render();
-        // }
+    onAppReady() {
+        this.setTemplate('component-song-card');
+        this.render();
+
+        this.$video = this.$('video');
+        this.$video[0].ontimeupdate = this.updateTrackInfo.bind(this);
+        this.$video[0].onended = this.songOver.bind(this);
     }
 
     formatTrackTime(time) {

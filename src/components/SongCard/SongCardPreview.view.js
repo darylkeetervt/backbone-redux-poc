@@ -8,6 +8,7 @@ class SongCardPreview extends ComponentView {
     constructor(options) {
         super({
             ...options,
+            className: 'pure-u-1-2',
             events: {
 
             }

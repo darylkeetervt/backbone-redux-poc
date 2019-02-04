@@ -1,7 +1,6 @@
-<script type="text/x-handlebars-template" id="component-song-card-preview">
-    <div class="card-preview-outer">
-        <div class="card-preview">
-            <img src="<@= element.artworkUrl100 @>" alt=""/>
-        </div>
+<script type="text/x-handlebars-template" id="component-song-card-preview" data-class-name="pure-u-2">
+    <div class="card-preview">
+        <img src="<@= element.artworkUrl100 @>" alt=""/>
+        <div class="card-preview-name"><@= element.trackName @></div>
     </div>
 </script>
