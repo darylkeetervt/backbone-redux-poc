@@ -5,8 +5,19 @@ import { syncCollections } from 'backbone-redux';
 import { store } from './store/AppStore';
 import { reducers } from './store/combinedReducers';
 export const uuid = require('uuid/v4');
-
 require('purecss');
+
+// Disable console logging unless "Debug" is passed as a URL Param
+const urlParams = new URLSearchParams(window.location.search);
+const debug = urlParams.get('Debug');
+if (debug !== 'true') {
+    console = {
+        log: () => {},
+        warn: () => {},
+        error: () => {},
+        info: () => {}
+    }
+}
 
 Backbone.$ = jQuery;
 export const app = app || {};

@@ -1,6 +1,6 @@
 /**
- * Checks the list of dataListeners and dispatches the LOG_ACTION if
- * the current action type is related to the listener. This allows
+ * Checks the list of dataListeners and dispatches the NOTIFY_VIEW if
+ * the current action type is related to the listener (a view). This allows
  * conditional rendering for views.
  * @param store
  * @returns {function(*): Function}
