@@ -5,6 +5,17 @@ const initialState = {
 };
 
 /**
+ * Dispatches the acknowledgement for a view that will react to a store update notification.
+ * @param {string} viewId
+ * @return {Function}
+ */
+export const viewAcknowledge = (viewId) => {
+    return (dispatch) => {
+        dispatch({ type: 'VIEW_ACKNOWLEDGED', payload: viewId });
+    };
+};
+
+/**
  * Handles app level actions such as whether the application has fully loaded and
  * notifying views that their collection data has changed.
  * @param {object} state

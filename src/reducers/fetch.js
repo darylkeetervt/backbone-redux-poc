@@ -1,5 +1,3 @@
-import { store } from '../store/AppStore';
-
 const initialState = {
     currentlyFetching: []
 };
@@ -13,20 +11,22 @@ const initialState = {
  * @param {object} collection
  */
 export const fetchCollection = (collection) => {
-    const name = collection.collectionName.toUpperCase();
-    if (!store.getState().fetch.currentlyFetching.includes(name)){
-        store.dispatch({ type: 'FETCH_START', payload: name });
-        collection.fetch({
-            success: () => store.dispatch({type: 'FETCH_COMPLETE', payload: name})
-        });
-    }
+    return (dispatch, getState) => {
+
+        const name = collection.collectionName.toUpperCase();
+        if (!getState().fetch.currentlyFetching.includes(name)){
+            dispatch({ type: 'FETCH_COLLECTION_START', payload: name });
+            collection.fetch().then(() => dispatch({ type: 'FETCH_COLLECTION_COMPLETE', payload: name }))
+        }
+
+    };
 };
 
 export default fetch = (state = initialState, action = { type: 'NOOP' }) => {
     switch (action.type) {
-        case 'FETCH_START':
+        case 'FETCH_COLLECTION_START':
             return { ...state, currentlyFetching: [...state.currentlyFetching, action.payload] };
-        case 'FETCH_COMPLETE':
+        case 'FETCH_COLLECTION_COMPLETE':
             return { ...state, currentlyFetching: [...state.currentlyFetching.filter(item => item !== action.payload)] };
         default:
             return state;

@@ -54,7 +54,6 @@ export const _ = { ..._underscore };
      * @returns {{init: Function}}
      * @constructor
      */
-
     const Loader = () => {
         let components = null;
         let view = '';
