@@ -1,6 +1,7 @@
 import { ComponentView } from '../../globals/Component';
 import { _, app } from '../../index';
 import { fetchCollection } from '../../reducers/fetch';
+import { viewAcknowledge } from '../../reducers/app';
 
 require('./MoodSelector.scss');
 
@@ -17,21 +18,7 @@ class MoodSelector extends ComponentView {
 
     onAppReady() {
         this.setTemplate('component-mood-selector');
-        fetchCollection(this.collection);
-    }
-
-    onStoreUpdated(store) {
-        const state = store.getState();
-
-        // Check if data we are listening to in the store was changed before rendering
-        const { app: { alertedListeners } } = state;
-        const matchedListeners = alertedListeners.filter(viewId => viewId === this.uuid);
-
-        if (matchedListeners.length) {
-            matchedListeners.forEach(() => store.dispatch({type: 'VIEW_ACKNOWLEDGED', payload: this.uuid}));
-
-            this.render();
-        }
+        this.props.fetchCollection(this.collection);
     }
 
     /**
@@ -57,6 +44,15 @@ class MoodSelector extends ComponentView {
 
         this.$('.selector-outer').html(html);
     }
+
+    /**
+     * Define functions which need to be wrapped with dispatch.
+     * @type {object}
+     */
+    mapDispatchToProps = {
+        fetchCollection,
+        viewAcknowledge
+    };
 
 
 }

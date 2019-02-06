@@ -22,7 +22,6 @@ class Title extends ComponentView {
         this.setTemplate('title-component-template');
     }
 
-
     render() {
         this.$el.html(this.template({ title: this.options.props.title }));
     }

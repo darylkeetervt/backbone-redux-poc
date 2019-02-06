@@ -3,6 +3,7 @@ import { app, _ } from '../../index';
 import $ from 'jquery';
 import 'slick-carousel';
 import { fetchCollection } from '../../reducers/fetch';
+import { viewAcknowledge} from '../../reducers/app';
 
 require('./SongCards.scss');
 require('../../globals/slick-carousel.scss');
@@ -84,41 +85,36 @@ class SongCards extends ComponentView {
         this.elements = [];
         this.$carousel = this.$('.pure-g');
         this.setCarouselConfig();
-        fetchCollection(this.collection);
+        this.props.fetchCollection(this.collection);
     }
 
-    onStoreUpdated (store) {
-        const state = store.getState();
+    onViewNotified() {
+        this.elements = _.pluck(
+            this.collection.models.map(model => {
 
-        // Check if data we are listening to in the store was changed before rendering
-        const { app: { alertedListeners } } = state;
-        const matchedListeners = alertedListeners.filter(viewId => viewId === this.uuid);
+                const view = new app.views.SongCard({ model: model });
+                this.listenTo(view, 'play', this.play);
+                this.listenTo(view, 'pause', this.pause);
+                this.listenTo(view, 'over', this.songOver);
 
-
-        if (matchedListeners.length) {
-            matchedListeners.forEach(() => store.dispatch({type: 'VIEW_ACKNOWLEDGED', payload: this.uuid}));
-
-            this.elements = _.pluck(
-                this.collection.models.map(model => {
-
-                    const view = new app.views.SongCard({ model: model });
-                    this.listenTo(view, 'play', this.play);
-                    this.listenTo(view, 'pause', this.pause);
-                    this.listenTo(view, 'over', this.songOver);
-
-                    return view;
-                })
-                , '$el'
-            );
-
-            this.render();
-        }
+                return view;
+            })
+            , '$el'
+        );
     }
 
     render() {
         this.$carousel.html(this.elements).slick(this.carouselSettings);
     }
 
+    /**
+     * Define functions which need to be wrapped with dispatch.
+     * @type {object}
+     */
+    mapDispatchToProps = {
+        fetchCollection,
+        viewAcknowledge
+    };
 
 }
 

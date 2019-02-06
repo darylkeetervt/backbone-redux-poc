@@ -1,6 +1,7 @@
 import { ComponentView } from '../../globals/Component';
 import { app } from '../../index';
 import { fetchCollection } from '../../reducers/fetch';
+import { viewAcknowledge } from '../../reducers/app';
 
 require('./Posts.scss');
 
@@ -17,16 +18,7 @@ class Posts extends ComponentView {
 
     onAppReady () {
         this.setTemplate('component-post');
-        fetchCollection(this.collection);
-    }
-
-    onStoreUpdated (store) {
-        // Check if POSTS were changed before rendering
-        const { app: { alertedListeners } } = store.getState();
-        if (alertedListeners.includes(this.uuid)) {
-            store.dispatch({ type: 'VIEW_ACKNOWLEDGED', payload: this.uuid });
-            this.render();
-        }
+        this.props.fetchCollection(this.collection);
     }
 
     buttonClicked (element) {
@@ -36,10 +28,19 @@ class Posts extends ComponentView {
     }
 
     render() {
-        const { filter: { currentFilter} } = this.getStore().getState();
+        const { filter: { currentFilter} } = this.store.getState();
         const posts = this.collection.toJSON().filter(post => post.title.indexOf(currentFilter) > -1);
         this.$('.pure-g').html(this.template({ data: posts }));
     }
+
+    /**
+     * Define functions which need to be wrapped with dispatch.
+     * @type {object}
+     */
+    mapDispatchToProps = {
+        fetchCollection,
+        viewAcknowledge
+    };
 }
 
 app.views.Posts = Posts;
