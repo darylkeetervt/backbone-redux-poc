@@ -1,7 +1,6 @@
 import { ComponentView } from '../../globals/Component';
 import { app } from '../../index';
 import { fetchCollection } from '../../reducers/fetch';
-import { viewAcknowledge } from '../../reducers/app';
 
 require('./Posts.scss');
 
@@ -38,8 +37,7 @@ class Posts extends ComponentView {
      * @type {object}
      */
     mapDispatchToProps = {
-        fetchCollection,
-        viewAcknowledge
+        fetchCollection
     };
 }
 

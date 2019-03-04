@@ -3,7 +3,6 @@ import { app, _ } from '../../index';
 import $ from 'jquery';
 import 'slick-carousel';
 import { fetchCollection } from '../../reducers/fetch';
-import { viewAcknowledge} from '../../reducers/app';
 
 require('./SongCards.scss');
 require('../../globals/slick-carousel.scss');
@@ -19,6 +18,9 @@ class SongCards extends ComponentView {
         });
     }
 
+    /**
+     * Sets the carousel config object and callbacks.
+     */
     setCarouselConfig() {
         this.$carousel.on('afterChange', this.onTrackChanged.bind(this));
 
@@ -32,6 +34,10 @@ class SongCards extends ComponentView {
         };
     }
 
+    /**
+     * Starts playback of the video with the specified id.
+     * @param {string} videoId
+     */
     play(videoId) {
         const $video = this.$(`#video-${videoId}`);
 
@@ -40,6 +46,10 @@ class SongCards extends ComponentView {
         $video[0].play();
     }
 
+    /**
+     * Pauses the video with the specified id.
+     * @param {string} videoId
+     */
     pause(videoId) {
         const $video = this.$(`#video-${videoId}`);
 
@@ -47,15 +57,28 @@ class SongCards extends ComponentView {
         $video[0].pause();
     }
 
+    /**
+     * Called after the current video is over and starts playback of the next video.
+     * @param {string} videoId
+     */
     songOver(videoId) {
         this.pause(videoId);
         this.nextSong();
     }
 
+    /**
+     * Advances the carousel to the next video slide.
+     */
     nextSong() {
         this.$carousel.slick('slickNext');
     }
 
+    /**
+     * Called when the index of the carousel changes.
+     * @param {object} event
+     * @param {object} slick
+     * @param {number} slideNumber
+     */
     onTrackChanged(event, slick, slideNumber) {
 
         if (slideNumber !== this.currentSlideIndex) {
@@ -69,6 +92,10 @@ class SongCards extends ComponentView {
 
     }
 
+    /**
+     * Stops playback of all videos except the one with the specified id.
+     * @param currentVideoId
+     */
     stopAllPlaybackExceptCurrent(currentVideoId) {
         this.$('video').each((index, video) => {
             const $video = $(video);
@@ -112,8 +139,7 @@ class SongCards extends ComponentView {
      * @type {object}
      */
     mapDispatchToProps = {
-        fetchCollection,
-        viewAcknowledge
+        fetchCollection
     };
 
 }

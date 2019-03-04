@@ -1,7 +1,6 @@
 import { ComponentView } from '../../globals/Component';
 import { _, app } from '../../index';
 import { fetchCollection } from '../../reducers/fetch';
-import { viewAcknowledge } from '../../reducers/app';
 
 require('./MoodSelector.scss');
 
@@ -50,8 +49,7 @@ class MoodSelector extends ComponentView {
      * @type {object}
      */
     mapDispatchToProps = {
-        fetchCollection,
-        viewAcknowledge
+        fetchCollection
     };
 
 

@@ -1,10 +1,10 @@
-import {View} from 'backbone';
-import { app, uuid} from '../../index';
-import { store } from '../../store/AppStore';
+import { ComponentView }  from '../../globals/Component';
+import { app } from '../../index';
+import { applyFilter } from '../../reducers/filter';
 
 require('./Filter.scss');
 
-class Filter extends View {
+class Filter extends ComponentView {
 
     constructor(options) {
         super({
@@ -14,13 +14,15 @@ class Filter extends View {
             }
         });
 
-        this.uuid = uuid();
     }
 
-    filter () {
-        const entry = this.$('input[name="entry"]').val();
-        store.dispatch({ entry, type: 'FILTER_POSTS' });
+    filter (e) {
+        this.props.applyFilter(e.target.value);
     }
+
+    mapDispatchToProps = {
+        applyFilter
+    };
 }
 
 app.views.Filter = Filter;
